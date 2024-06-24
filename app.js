@@ -10,7 +10,10 @@ const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 
-app.use(bodyParser.json());
+// Middleware to parse JSON bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/api', userRoutes);
 app.use('/api', productRoutes);
 app.use('/api', bookingRoutes);
@@ -21,11 +24,11 @@ const PORT = process.env.PORT || 3000;
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    console.log('DB Connection has been established successfully.');
 
-    // Synchronize models
-    await sequelize.sync({ force: true }); // Use force: true to drop and recreate tables
-    console.log('All models were synchronized successfully.');
+    // // Synchronize models
+     //await sequelize.sync({ force: true }); // Use force: true to drop and recreate tables
+     //console.log('All models were synchronized successfully.');
 
     // Start the server
     app.listen(PORT, () => {
