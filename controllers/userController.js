@@ -1,8 +1,15 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const createUser = async (req, res) => {
+  console.log("hello");
+  console.log(req.body);
   try {
     const { username, email, password, phone } = req.body;
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email is already in use' });
+    }
     const user = await User.create({ username, email, password, phone });
     res.status(201).json(user);
   } catch (error) {
@@ -10,8 +17,24 @@ const createUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user || !(await user.validatePassword(password))) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+    res.json({ token });
+    console.log("JWT TOKEN GENERATED");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const getUser = async (req, res) => {
   try {
+    console.log("PK " + req.params.id);
     const user = await User.findByPk(req.params.id);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -64,6 +87,7 @@ const getAllUsers = async (req, res) => {
 
 module.exports = {
   createUser,
+  loginUser,
   getUser,
   updateUser,
   deleteUser,
