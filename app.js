@@ -19,7 +19,7 @@ app.use('/api', productRoutes);
 app.use('/api', bookingRoutes);
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ;
 
 (async () => {
   try {
@@ -27,8 +27,8 @@ const PORT = process.env.PORT || 3000;
     console.log('DB Connection has been established successfully.');
 
     // // Synchronize models
-     //await sequelize.sync({ force: true }); // Use force: true to drop and recreate tables
-     //console.log('All models were synchronized successfully.');
+    // await sequelize.sync({ force: true }); // Use force: true to drop and recreate tables
+    // console.log('All models were synchronized successfully.');
 
     // Start the server
     app.listen(PORT, () => {
